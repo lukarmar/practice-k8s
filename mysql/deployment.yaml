@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-server
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: mysql-server
+        tier: db
+    spec:
+      containers:
+        - name: sql-server
+          image: mysql:5.7
+          args:
+            - "--ignore-db-dir=lost+found"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-pass-dbmysql
+                  key: dbpass
+            - name: MYSQL_DATABASE
+              value: first-database
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: var/lib/mysql
+              name: persist-storage-mysql
+
+      volumes:
+        - name: persist-storage-mysql
+          persistentVolumeClaim:
+              claimName: persist-volume-mysql

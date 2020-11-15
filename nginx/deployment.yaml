@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-nginx
+      tier: server
+  template:
+    metadata:
+      labels:
+        app: app-nginx
+        tier: server
+    spec:
+      containers:
+        - name: app-nginx
+          image: nginx:1.17-alpine
+          ports:
+            - containerPort: 80
+        
+
+
+# nginx:1.17-alpine
